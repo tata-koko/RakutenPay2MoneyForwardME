@@ -1,0 +1,32 @@
+name: Run RakutenPay2MoneyForwardME
+
+on:
+  schedule:
+    # 毎日午前6時（JST）に実行 → UTCだと21:00
+    - cron: "0 21 * * *"
+  workflow_dispatch: # 手動実行も可能
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run script
+        env:
+          MONEY_FORWARD_ID: ${{ secrets.MONEY_FORWARD_ID }}
+          MONEY_FORWARD_PW: ${{ secrets.MONEY_FORWARD_PW }}
+          TESTMAIL_API_KEY: ${{ secrets.TESTMAIL_API_KEY }}
+          TESTMAIL_NAMESPACE: ${{ secrets.TESTMAIL_NAMESPACE }}
+          TESTMAIL_INBOX: ${{ secrets.TESTMAIL_INBOX }}
+        run: npm start
